@@ -14,30 +14,28 @@ MFCCs = reshape(MFCCs,[1,(12*1098)]);
 MFCCs_test_n = reshape(MFCCs_test_n,[1,(12*1098)]);
 MFCCs_test_a = reshape(MFCCs_test_a,[1,(12*1098)]);
 
-% featuresAfter = MFCCs;
-%%Construct the LSTM autoencoder network and set the training
-%%options.(uncoment to toggle the options)
-% featureDimension = 1;
-%
-% % Define biLSTM network layers
-% layers = [ sequenceInputLayer(featureDimension, 'Name', 'in')
-%    bilstmLayer(16, 'Name', 'bilstm1')
-%    reluLayer('Name', 'relu1')
-%    bilstmLayer(32, 'Name', 'bilstm2')
-%    reluLayer('Name', 'relu2')
-%    bilstmLayer(16, 'Name', 'bilstm3')
-%    reluLayer('Name', 'relu3')
-%    fullyConnectedLayer(featureDimension, 'Name', 'fc')
-%    regressionLayer('Name', 'out') ];
-%
-% % Set Training Options
-% options = trainingOptions('adam', ...
-%    'Plots', 'training-progress', ...
-%    'MiniBatchSize', 500,...
-%    'MaxEpochs',4000);
+ featuresAfter = MFCCs;
+%Construct the LSTM autoencoder network and set the training
+%options.(uncoment to toggle the options)
+featureDimension = 1;
 
-% net = trainNetwork(featuresAfter, featuresAfter, layers, options);
+% Define biLSTM network layers
+layers = [ sequenceInputLayer(featureDimension, 'Name', 'in')
+   bilstmLayer(16, 'Name', 'bilstm1')
+   reluLayer('Name', 'relu1')
+   bilstmLayer(32, 'Name', 'bilstm2')
+   reluLayer('Name', 'relu2')
+   bilstmLayer(16, 'Name', 'bilstm3')
+   reluLayer('Name', 'relu3')
+   fullyConnectedLayer(featureDimension, 'Name', 'fc')
+   regressionLayer('Name', 'out') ];
 
+% Set Training Options
+options = trainingOptions('adam', ...
+   'Plots', 'training-progress', ...
+   'MiniBatchSize', 500,...
+   'MaxEpochs',4000);
+ net = trainNetwork(featuresAfter, featuresAfter, layers, options);
 testcase = [MFCCs_test_a MFCCs_test_n];
 yHatAll = predict(net, testcase);
 errorAll = helperCalculateError(testcase, yHatAll);
